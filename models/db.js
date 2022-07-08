@@ -40,7 +40,7 @@ Writter.belongsTo(User, {
 })
 
 Writter.hasOne(Blog, {
-	onDelete: "CASCADE", 
+	onDelete: "CASCADE",
 	foreignKey: {
 		allowNull: false,
 	},
@@ -51,4 +51,8 @@ User.hasOne(CommentModel, {
 	onDelete: "CASCADE",
 })
 CommentModel.belongsTo(User)
-module.exports = { sequelize, User, Writter, Blog }
+Blog.hasOne(CommentModel, {
+	onDelete: "CASCADE",
+})
+CommentModel.belongsTo(Blog)
+module.exports = { sequelize, User, Writter, Blog, CommentModel }
