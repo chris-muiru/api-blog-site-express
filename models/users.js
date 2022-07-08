@@ -2,12 +2,12 @@ const { DataTypes } = require("sequelize")
 const createUser = (sequelize) => {
 	return sequelize.define("User", {
 		username: {
-			type: DataTypes.STRING(255),
+			type: DataTypes.STRING(25),
 			allowNull: false,
 			unique: true,
 		},
 		email: {
-			type: DataTypes.STRING(255),
+			type: DataTypes.STRING(25),
 			allowNull: false,
 			unique: true,
 		},
