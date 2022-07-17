@@ -43,7 +43,9 @@ const initializePassport = (passport) => {
 		new LocalStrategy(
 			{
 				usernameField: "username",
+				passwordField:"password"
 			},
+			// localstartegy takes a function with three parameters,username,password and a callback function
 			authenticateUser
 		)
 	)
@@ -51,8 +53,8 @@ const initializePassport = (passport) => {
 		// serialize user to store into session
 		return done(null, user.id)
 	})
-	passport.deserializeUser((id, done) => {
-		return done(null, getUserById(id))
+	passport.deserializeUser(async(id, done) => {
+		return done(null, await getUserById(id))
 	})
 }
 module.exports = initializePassport
