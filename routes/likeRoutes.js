@@ -26,6 +26,7 @@ router
 		try {
 			const { blogId } = req.params
 			const userId = req.user
+			// type can be either true or false(0 or 1)
 			const { type: like } = req.body
 
 			const confirmLike = await LikeModel.findOne({
