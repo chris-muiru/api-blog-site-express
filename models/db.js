@@ -6,7 +6,13 @@ const createLikeModel = require("./like")
 const createUser = require("./users")
 const createWritter = require("./writters")
 const connectSession = require("./authSessionModel")
-const sequelize = new Sequelize("blog_site", "root", "mysql254", {
+const dotenv = require("dotenv")
+
+dotenv.config()
+
+const DATABASE_PASSWORD = process.env.DATABASE_PASSWORD
+const DATABASE_USER = process.env.DATABASE_USER
+const sequelize = new Sequelize("blog_site", DATABASE_USER, DATABASE_PASSWORD, {
 	host: "localhost",
 	dialect: "mysql",
 })
