@@ -25,21 +25,29 @@ router
 	.post(async (req, res, next) => {
 		try {
 			const { blogId } = req.params
-			const confirmLike = await LikeModel({
+			const userId = req.user
+			const { type: like } = req.body
+
+			const confirmLike = await LikeModel.findOne({
 				where: {
 					BlogId: blogId,
-                    UserId:null
+					UserId: userId,
 				},
 			})
-			if (confirmLike) {
-				const createLike = await LikeModel.create(req.body)
+			if (!confirmLike) {
+				const createLike = await LikeModel.create({
+					type: like,
+					UserId: userId,
+					BlogId: blogId,
+				})
 				res.status(201).json({ message: "liked" })
 			} else {
-				next()
+				res.status(202).json({ msg: "already liked" })
 			}
 		} catch (err) {
-            res.status(500).json({err:"internal server error"})
-        }
+			console.log(err)
+			res.status(500).json({ err: "internal server error" })
+		}
 	})
 
 module.exports = router
