@@ -9,7 +9,6 @@ const commentRoutes = require("./routes/commentRoutes")
 const likeRoutes = require("./routes/likeRoutes")
 const userRoutes = require("./routes/userRoutes")
 const session = require("express-session")
-// const SequelStore = require("sequelstore-connect")(session)
 const initializePassport = require("./config/passportLocal")
 initializePassport(passport)
 
@@ -27,6 +26,14 @@ app.use(
 		saveUninitialized: false,
 	})
 )
+const checkAuthenticated = (req, res, next) => {
+	if (req.isAuthenticated()) {
+		return next()
+		// res.redirect("/dash")
+	} else {
+		res.redirect("/login")
+	}
+}
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -41,6 +48,7 @@ app.post(
 		failureFlash: true,
 	})
 )
+// app.use(checkAuthenticated)
 app.use("/dash", blogRoutes)
 app.use("/comment", commentRoutes)
 app.use("/like", likeRoutes)
