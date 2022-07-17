@@ -18,8 +18,16 @@ router
 		}
 	})
 	.post(async (req, res) => {
+		const { comment } = req.body
+		const { blogId: BlogId } = req.params
+		const UserId = req.user
+		console.log(UserId)
 		try {
-			const createCommentByBlog = await CommentModel.create(req.body)
+			const createCommentByBlog = await CommentModel.create({
+				comment,
+				UserId,
+				BlogId,
+			})
 			res.status(201).json({ message: "created successfully" })
 		} catch (err) {
 			res.status(404).json({ err: "incorrect data" })
