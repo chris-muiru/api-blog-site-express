@@ -1,7 +1,6 @@
 const { DataTypes } = require("sequelize")
 
 const createBlog = (sequelize) => {
-	
 	return sequelize.define("Blog", {
 		title: {
 			type: DataTypes.STRING(255),
