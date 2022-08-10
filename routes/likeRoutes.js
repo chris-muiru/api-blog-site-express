@@ -22,7 +22,7 @@ router
 			res.status(500).json({ err: "internal server error" })
 		}
 	})
-	.post(async (req, res, next) => {
+	.post(async (req, res) => {
 		try {
 			const { blogId } = req.params
 			const userId = req.user
