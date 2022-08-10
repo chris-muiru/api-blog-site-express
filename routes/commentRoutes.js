@@ -3,6 +3,7 @@ const router = express.Router()
 const { CommentModel } = require("../models/db")
 router
 	.route("/:blogId")
+	// get comment based on blogId
 	.get(async (req, res) => {
 		const { blogId } = req.params
 		try {
@@ -17,6 +18,7 @@ router
 			res.status(500).json({ err: "internal server error" })
 		}
 	})
+	// create comment
 	.post(async (req, res) => {
 		const { comment } = req.body
 		const { blogId: BlogId } = req.params
@@ -33,7 +35,7 @@ router
 			res.status(404).json({ err: "incorrect data" })
 		}
 	})
-
+// delete comment
 router.route("/delete/:commentId").delete(async (req, res) => {
 	const { commentId } = req.params
 	console.log(commentId)
