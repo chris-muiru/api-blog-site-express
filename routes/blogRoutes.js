@@ -13,8 +13,9 @@ router
 			res.status(200).json({ status: "blog created" })
 		} catch (e) {
 			if (e.name == "SequelizeUniqueConstraintError") {
-				res.status(403).json({ err: "user already created" })
+				res.status(403).json({ err: "blog already created" })
 			} else {
+				console.log(e)
 				res.status(500).json({ err: "an error occured" })
 			}
 		}
