@@ -2,7 +2,7 @@ const LocalStrategy = require("passport-local").Strategy
 const bcrypt = require("bcrypt")
 const { User } = require("../models/db")
 
-const getUserName = async (name) => {
+const getUserByName = async (name) => {
 	const user = await User.findOne({
 		where: {
 			username: name,
@@ -19,12 +19,14 @@ const getUserById = async (userId) => {
 	})
 	return user.id
 }
+
 const initializePassport = (passport) => {
 	const authenticateUser = async (username, password, done) => {
 		/**
 		 * verify function - to authenticate user
 		 */
-		const user = await getUserName(username)
+		// check if user exists
+		const user = await getUserByName(username)
 
 		if (user == null) {
 			return done(null, false, { msg: "no user with that username" })
@@ -43,7 +45,7 @@ const initializePassport = (passport) => {
 		new LocalStrategy(
 			{
 				usernameField: "username",
-				passwordField:"password"
+				passwordField: "password",
 			},
 			// localstartegy takes a function with three parameters,username,password and a callback function
 			authenticateUser
@@ -53,7 +55,8 @@ const initializePassport = (passport) => {
 		// serialize user to store into session
 		return done(null, user.id)
 	})
-	passport.deserializeUser(async(id, done) => {
+	passport.deserializeUser(async (id, done) => {
+		// deserialize user by id
 		return done(null, await getUserById(id))
 	})
 }
