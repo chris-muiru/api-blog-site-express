@@ -8,6 +8,7 @@ const blogRoutes = require("./routes/blogRoutes.js")
 const commentRoutes = require("./routes/commentRoutes")
 const likeRoutes = require("./routes/likeRoutes")
 const userRoutes = require("./routes/userRoutes")
+const writtersRoutes = require("./routes/writtersRoute")
 const session = require("express-session")
 const initializePassport = require("./config/passportLocal")
 initializePassport(passport)
@@ -24,12 +25,12 @@ app.use(
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
+		cookie: { maxAge: 3600000 },
 	})
 )
-const checkAuthenticated = (req, res, next) => {
+const checkAuthenticated = (req, res) => {
 	if (req.isAuthenticated()) {
-		return next()
-		// res.redirect("/dash")
+		res.redirect("/dash")
 	} else {
 		res.redirect("/login")
 	}
@@ -53,6 +54,8 @@ app.use("/dash", blogRoutes)
 app.use("/comment", commentRoutes)
 app.use("/like", likeRoutes)
 app.use("/user", userRoutes)
+app.use("/writter", writtersRoutes)
+
 app.listen(PORT, () => {
 	console.log(`connected successfully on port ${PORT}`)
 })
