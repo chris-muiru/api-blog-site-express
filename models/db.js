@@ -35,6 +35,7 @@ const sessionStore = connectSession(sequelize)
 
 User.hasOne(LikeModel)
 LikeModel.belongsTo(User)
+
 Blog.hasOne(LikeModel)
 LikeModel.belongsTo(Blog)
 
