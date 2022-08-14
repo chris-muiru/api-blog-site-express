@@ -8,16 +8,18 @@ const getUserByName = async (name) => {
 			username: name,
 		},
 	})
+	console.log(user)
 
 	return user
 }
+
 const getUserById = async (userId) => {
 	const user = await User.findOne({
 		where: {
 			id: userId,
 		},
 	})
-	return user.id
+	return user
 }
 
 const initializePassport = (passport) => {
@@ -45,7 +47,6 @@ const initializePassport = (passport) => {
 		new LocalStrategy(
 			{
 				usernameField: "username",
-				passwordField: "password",
 			},
 			// localstartegy takes a function with three parameters,username,password and a callback function
 			authenticateUser
