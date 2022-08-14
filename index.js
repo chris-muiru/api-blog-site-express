@@ -1,7 +1,7 @@
 const express = require("express")
 const passport = require("passport")
+const cors = require("cors")
 const dotenv = require("dotenv")
-const flash = require("express-flash")
 const { sequelize } = require("./models/db")
 const { request } = require("express")
 const blogRoutes = require("./routes/blogRoutes.js")
@@ -19,20 +19,29 @@ dotenv.config()
 
 const app = express()
 const PORT = process.env.PORT || 8000
-app.use(flash())
+app.use(
+	cors({
+		origin: "http://localhost:3000",
+	})
+)
 app.use(
 	session({
+		name: "blogpostAuth",
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
 		cookie: { maxAge: 3600000 },
 	})
 )
-const checkAuthenticated = (req, res) => {
+const checkAuthenticated = (req, res, next) => {
 	if (req.isAuthenticated()) {
-		res.redirect("/dash")
+		console.log(res.user)
+		// res.redirect("/dash")
+		next()
 	} else {
-		res.redirect("/login")
+		console.log(req.user)
+		// res.redirect("/login")
+		next()
 	}
 }
 
@@ -41,15 +50,22 @@ app.use(passport.session())
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.post(
-	"/login",
-	passport.authenticate("local", {
-		successRedirect: "/dash",
-		failureRedirect: "/login",
-		failureFlash: true,
-	})
-)
-// app.use(checkAuthenticated)
+
+app.post("/login", (req, res, next) => {
+	passport.authenticate("local", (err, user) => {
+		if (err) throw err
+		req.logIn(user, (loginError) => {
+			if (loginError) {
+				// console.log(loginError)
+				res.status(500).send({ msg: "wrong credentials" })
+			} else if (user) {
+				res.status(200).send({ msg: "authenticated" })
+			}
+		})
+	})(req, res, next)
+})
+
+app.use(checkAuthenticated)
 app.use("/dash", blogRoutes)
 app.use("/comment", commentRoutes)
 app.use("/like", likeRoutes)
