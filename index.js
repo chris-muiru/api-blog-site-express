@@ -51,12 +51,11 @@ app.use(passport.session())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 
-app.post("/login", (req, res, next) => {
+app.post("/auth/login", (req, res, next) => {
 	passport.authenticate("local", (err, user) => {
 		if (err) throw err
 		req.logIn(user, (loginError) => {
 			if (loginError) {
-				// console.log(loginError)
 				res.status(500).send({ msg: "wrong credentials" })
 			} else if (user) {
 				res.status(200).send({ msg: "authenticated" })
