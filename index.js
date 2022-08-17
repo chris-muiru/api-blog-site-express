@@ -56,7 +56,7 @@ app.post("/auth/login", (req, res, next) => {
 		if (err) throw err
 		req.logIn(user, (loginError) => {
 			if (loginError) {
-				res.status(500).send({ msg: "wrong credentials" })
+				res.status(404).send({ msg: "wrong credentials" })
 			} else if (user) {
 				res.status(200).send({ msg: "authenticated" })
 			}
@@ -68,7 +68,7 @@ app.use(checkAuthenticated)
 app.use("/dash", blogRoutes)
 app.use("/comment", commentRoutes)
 app.use("/like", likeRoutes)
-app.use("/user", userRoutes)
+app.use("/auth/signup/", userRoutes)
 app.use("/writter", writtersRoutes)
 
 app.listen(PORT, () => {
