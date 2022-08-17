@@ -8,8 +8,6 @@ const getUserByName = async (name) => {
 			username: name,
 		},
 	})
-	console.log(user)
-
 	return user
 }
 
