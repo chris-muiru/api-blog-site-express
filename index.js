@@ -9,9 +9,25 @@ const commentRoutes = require("./routes/commentRoutes")
 const likeRoutes = require("./routes/likeRoutes")
 const userRoutes = require("./routes/userRoutes")
 const writtersRoutes = require("./routes/writtersRoute")
+const { checkAuthenticated } = require("./permissions")
 const session = require("express-session")
 const initializePassport = require("./config/passportLocal")
 initializePassport(passport)
+
+// add swagger
+const swaggerUi = require("swagger-ui-express")
+const swaggerJSDoc = require("swagger-jsdoc")
+const swaggerOptions = {
+	definition: {
+		openapi: "3.0.0",
+		info: {
+			title: "blog site api express",
+			version: "1.0.0",
+		},
+	},
+	apis: ["./routes/*.js", "index.js"],
+}
+const swaggerSpec = swaggerJSDoc(swaggerOptions)
 
 sequelize.sync()
 
@@ -30,20 +46,9 @@ app.use(
 		secret: process.env.SESSION_SECRET,
 		resave: false,
 		saveUninitialized: false,
-		cookie: { maxAge: 3600000 },
+		cookie: { maxAge: 3600000000 },
 	})
 )
-const checkAuthenticated = (req, res, next) => {
-	if (req.isAuthenticated()) {
-		console.log(res.user)
-		// res.redirect("/dash")
-		next()
-	} else {
-		console.log(req.user)
-		// res.redirect("/login")
-		next()
-	}
-}
 
 app.use(passport.initialize())
 app.use(passport.session())
@@ -56,21 +61,25 @@ app.post("/auth/login", (req, res, next) => {
 		if (err) throw err
 		req.logIn(user, (loginError) => {
 			if (loginError) {
-				res.status(404).send({ msg: "wrong credentials" })
+				res.status(404).send({ msg: "user not found" })
 			} else if (user) {
 				res.status(200).send({ msg: "authenticated" })
 			}
 		})
 	})(req, res, next)
 })
+app.use("/auth/signup/", userRoutes)
+
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use(checkAuthenticated)
-app.use("/dash", blogRoutes)
-app.use("/comment", commentRoutes)
-app.use("/like", likeRoutes)
-app.use("/auth/signup/", userRoutes)
+app.use("/blog", blogRoutes)
+app.use("/blog/comment", commentRoutes)
+app.use("/blog/like", likeRoutes)
 app.use("/writter", writtersRoutes)
 
 app.listen(PORT, () => {
 	console.log(`connected successfully on port ${PORT}`)
 })
+
+// TODO: check Morgan,wiston
