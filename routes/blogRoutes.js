@@ -1,15 +1,37 @@
 const express = require("express")
 const router = express.Router()
-const { Blog } = require("../models/db")
+const { Blog, User } = require("../models/db")
+const { isWritterPermissionOrReadOnly } = require("../permissions")
+/**
+ * @openapi
+ * /:
+//  *   get:
+//  *     description: Welcome to swagger-jsdoc!
+//  *     responses:
+//  *       200:
+//  *         description: Returns a mysterious string.
+ */
+const getWritter = async (req) => {
+	const user = await Writter.findOne({
+		where: {
+			UserId: req.user,
+		},
+	})
+	console.log(user.id)
+	return user.id
+}
 router
 	.route("")
 	.get(async (req, res) => {
 		const getBlogs = await Blog.findAll()
 		res.json(getBlogs)
 	})
-	.post(async (req, res) => {
+	.post(isWritterPermissionOrReadOnly, async (req, res) => {
 		try {
-			const createBlog = await Blog.create(req.body)
+			const createBlog = await Blog.create({
+				...req.body,
+				WritterId: await getWritter(req),
+			})
 			res.status(200).json({ status: "blog created" })
 		} catch (e) {
 			if (e.name == "SequelizeUniqueConstraintError") {
@@ -31,7 +53,7 @@ router
 			res.status(500).json({ err: "an error occured" })
 		}
 	})
-	.put(async (req, res) => {
+	.put(isWritterPermissionOrReadOnly, async (req, res) => {
 		let { id: blogId } = req.params
 		try {
 			const updateBlog = await Blog.update(req.body, {
@@ -44,7 +66,7 @@ router
 			res.status(404).json({ err: "invalid data" })
 		}
 	})
-	.delete(async (req, res) => {
+	.delete(isWritterPermissionOrReadOnly, async (req, res) => {
 		let { id: blogId } = req.params
 		try {
 			const deleteBlog = await Blog.destroy({
