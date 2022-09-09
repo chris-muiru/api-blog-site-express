@@ -17,7 +17,7 @@ const getUserById = async (userId) => {
 			id: userId,
 		},
 	})
-	return user
+	return user.id
 }
 
 const initializePassport = (passport) => {
