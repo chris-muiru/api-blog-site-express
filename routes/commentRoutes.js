@@ -36,7 +36,7 @@ router
 		}
 	})
 // delete comment
-router.route("/delete/:commentId").delete(async (req, res) => {
+router.route("/update/:commentId").delete(async (req, res) => {
 	const { commentId } = req.params
 	console.log(commentId)
 	try {
