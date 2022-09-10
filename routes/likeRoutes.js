@@ -25,7 +25,7 @@ router
 	.post(async (req, res) => {
 		try {
 			const { blogId } = req.params
-			const userId = req.user
+			const userId = req.user.id
 			// type can be either true or false(0 or 1)
 			const { type: like } = req.body
 
