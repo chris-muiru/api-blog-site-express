@@ -1,6 +1,9 @@
 // only allow authenticated users
-const { User } = require("./models/db")
+const { User, CommentModel } = require("./models/db")
 const checkAuthenticated = (req, res, next) => {
+	// if (req.method == "GET") {
+	// 	next()
+	// } else
 	if (!req.isAuthenticated()) {
 		console.log("ok")
 		res.status(401).send({ msg: "Unauthorized" })
@@ -11,15 +14,19 @@ const checkAuthenticated = (req, res, next) => {
 const isWritterPermissionOrReadOnly = async (req, res, next) => {
 	const user = await Writter.findOne({
 		where: {
-			UserId: req.user,
+			UserId: req.user.id,
 		},
 	})
-	if (user) {
+	if (req.method == "GET") {
+		next()
+	} else if (user) {
 		next()
 	} else {
 		res.status(403).send({ msg: "Forbidden" })
 	}
 }
-
+const isCommentCreatorOrReadOnly = async (req, res, next) => {
+	const user = req.user
+}
 exports.checkAuthenticated = checkAuthenticated
 exports.isWritterPermissionOrReadOnly = isWritterPermissionOrReadOnly
