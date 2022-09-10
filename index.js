@@ -12,6 +12,8 @@ const writtersRoutes = require("./routes/writtersRoute")
 const { checkAuthenticated } = require("./permissions")
 const session = require("express-session")
 const initializePassport = require("./config/passportLocal")
+const { isWritterPermissionOrReadOnly } = require("./permissions")
+
 initializePassport(passport)
 
 // add swagger
@@ -73,7 +75,7 @@ app.use("/auth/signup/", userRoutes)
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec))
 
 app.use(checkAuthenticated)
-app.use("/blog", blogRoutes)
+app.use("/blog", isWritterPermissionOrReadOnly, blogRoutes)
 app.use("/blog/comment", commentRoutes)
 app.use("/blog/like", likeRoutes)
 app.use("/writter", writtersRoutes)
