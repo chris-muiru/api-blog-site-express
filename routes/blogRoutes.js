@@ -1,7 +1,6 @@
 const express = require("express")
 const router = express.Router()
 const { Blog, User } = require("../models/db")
-const { isWritterPermissionOrReadOnly } = require("../permissions")
 /**
  * @openapi
  * /:
@@ -14,19 +13,18 @@ const { isWritterPermissionOrReadOnly } = require("../permissions")
 const getWritter = async (req) => {
 	const user = await Writter.findOne({
 		where: {
-			UserId: req.user,
+			UserId: req.user.id,
 		},
 	})
-	console.log(user.id)
 	return user.id
 }
 router
 	.route("")
 	.get(async (req, res) => {
 		const getBlogs = await Blog.findAll()
-		res.json(getBlogs)
+		res.status(200).json(getBlogs)
 	})
-	.post(isWritterPermissionOrReadOnly, async (req, res) => {
+	.post(async (req, res) => {
 		try {
 			const createBlog = await Blog.create({
 				...req.body,
@@ -53,7 +51,7 @@ router
 			res.status(500).json({ err: "an error occured" })
 		}
 	})
-	.put(isWritterPermissionOrReadOnly, async (req, res) => {
+	.put(async (req, res) => {
 		let { id: blogId } = req.params
 		try {
 			const updateBlog = await Blog.update(req.body, {
@@ -66,7 +64,7 @@ router
 			res.status(404).json({ err: "invalid data" })
 		}
 	})
-	.delete(isWritterPermissionOrReadOnly, async (req, res) => {
+	.delete(async (req, res) => {
 		let { id: blogId } = req.params
 		try {
 			const deleteBlog = await Blog.destroy({
