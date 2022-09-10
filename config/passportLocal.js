@@ -12,12 +12,12 @@ const getUserByName = async (name) => {
 }
 
 const getUserById = async (userId) => {
-	const user = await User.findOne({
+	const user = await User.scope("withoutPassword").findOne({
 		where: {
 			id: userId,
 		},
 	})
-	return user.id
+	return user
 }
 
 const initializePassport = (passport) => {
