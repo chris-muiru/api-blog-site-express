@@ -12,7 +12,7 @@ router
 	.post(async (req, res) => {
 		// create a writter
 		const inputs = req.body
-		const loggedUser = req.user
+		const loggedUser = req.user.id
 		try {
 			const writterExist = await Writter.findOne({
 				where: {
