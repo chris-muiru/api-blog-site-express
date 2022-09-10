@@ -20,6 +20,13 @@ const createUser = (sequelize) => {
 			},
 		},
 		{
+			scopes: {
+				withoutPassword: {
+					attributes: { exclude: ["password"] },
+				},
+			},
+		},
+		{
 			hooks: {
 				beforeCreate: (user) => {
 					if (user.password) {
